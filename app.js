@@ -3,8 +3,9 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 
-const routes = require('./routes')  // defaults for looking for an index.js file
+const routes = require('./routes');  // defaults for looking for an index.js file
 
 // pug template configuration
 app.set('view engine', 'pug');
@@ -15,10 +16,11 @@ app.set('view engine', 'pug');
 app.locals.company = "Pizza Shack";
 app.locals.body = {};
 app.locals.body.magic = "Foooooooooooooo!";
+app.locals.errors = {};
 
 // Middlewares
 app.use(express.static('public'))   // defaults to looking for index file
-
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(routes) // import routes from routes folder
 
 

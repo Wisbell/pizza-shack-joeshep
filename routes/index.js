@@ -7,6 +7,7 @@ const router = Router()
     // anyone can go to these pages whether they are logged in or not
 router.use(require('./about'))
 router.use(require('./contact'))
+router.use(require('./order'))
 router.use(require('./login'))
 router.use(require('./register'))
 router.use(require('./root'))       // Homepage
