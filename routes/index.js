@@ -18,13 +18,13 @@ router.use(require('./root'))       // Homepage
     // send user back home if they are not registered
     // TODO: define isAuthenticated
 
-// router.use( (req, res, next) => {
-//   if(req.isAuthenticated()){
-//     next();
-//   } else {
-//     res.redirect('/login')
-//   }
-// })
+router.use( (req, res, next) => {
+  if(req.isAuthenticated()){
+    next();
+  } else {
+    res.redirect('/login')
+  }
+})
 
 
 // private routes
