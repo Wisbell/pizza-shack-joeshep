@@ -4,7 +4,13 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const flash = require('express-flash');
+const session = require('express-session');
 const { cyan, red } = require('chalk');
+const passport = require('passport');
+const KnexSessionStore = require('connect-session-knex')(session);
+const { knex } = require('./db/database');
 
 const routes = require('./routes/')
 
@@ -17,17 +23,39 @@ app.locals.body = {};
 app.locals.body.magic = "Foooooo!";
 
 // Middlewares
-app.use(express.static('public'));
+app.use(cookieParser('secretpizza'))
+app.use(session({cookie: {maxAge: 60000}, secret: 'secretpizza', resave: true, saveUninitialized: false}))
+app.use(flash())
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(session({
+  store: new KnexSessionStore({
+    knex,
+    tablename: 'sessions'
+  }),
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET || 'pizzashacksupersecretkey'
+}))
+
+require('./lib/passport-strategies')
+app.use(passport.initialize())
+app.use(passport.session()) // middleware that alters req object and add user to session
+
+app.use( (req, res, next) => {
+  app.locals.email = req.user && req.user.email
+  next()
+})
+
+app.use(express.static('public'));
 app.use(routes);
 
-app.get('/login', (req, res, next) => {
-  res.render('login', {page: 'Login'});
-});
+// app.get('/login', (req, res, next) => {
+//   res.render('login', {page: 'Login'});
+// });
 
-app.get('/register', (req, res, next) => {
-  res.render('register', {page: 'Register'});
-});
+// app.get('/register', (req, res, next) => {
+//   res.render('register', {page: 'Register'});
+// });
 
 app.use((req, res) => {
   res.render('404');

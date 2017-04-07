@@ -9,6 +9,7 @@ router.use(require('./about'))
 router.use(require('./contact'))
 router.use(require('./order'))
 router.use(require('./login'))
+router.use(require('./logout'))
 router.use(require('./register'))
 router.use(require('./root'))       // Homepage
 

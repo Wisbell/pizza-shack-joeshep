@@ -25,12 +25,13 @@ module.exports.show = (req, res, err) =>
   ).catch(err)
 
 
-module.exports.create = ({ body }, res, err) => {
+module.exports.create = ({ body, flash }, res, err) => {
   console.log("body", body);
   Order.forge(body)
     .save()
     .then( (orderObj) => {
-      res.render('index', {orderMsg: "Thanks for your order!"});
+      flash('orderMsg', 'Thanks for your order!')
+      res.redirect('/');
     })
     .catch( (err) => {
       console.log("errors!", err);
